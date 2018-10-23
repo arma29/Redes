@@ -10,6 +10,15 @@ import pox.lib.packet as pkt
 from pox.lib.recoco import Timer
 import time
 
+#Strange Links(Flows)
+# S1[H3-H6]
+# S2[H3-H6][H1-H4]
+# S3[H1-H4]
+# S4[H6-H3]
+# S5[H6-H3][H4-H1]
+# S6[H4-H1]
+
+
 #5 switches
 s1_dpid=0
 s2_dpid=0
