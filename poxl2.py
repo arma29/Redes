@@ -1,3 +1,5 @@
+# ext/poxl2.py
+
 from pox.core import core
 import pox.openflow.libopenflow_01 as of
 from pox.lib.util import dpidToStr
@@ -10,13 +12,23 @@ import pox.lib.packet as pkt
 from pox.lib.recoco import Timer
 import time
 
-#Strange Links(Flows)
-# S1[H3-H6]
-# S2[H3-H6][H1-H4]
-# S3[H1-H4]
-# S4[H6-H3]
-# S5[H6-H3][H4-H1]
-# S6[H4-H1]
+
+# #net
+# mininet> net
+# h1 h1-eth0:s1-eth1
+# h2 h2-eth0:s1-eth2
+# h3 h3-eth0:s1-eth3
+# h4 h4-eth0:s2-eth1
+# h5 h5-eth0:s5-eth1
+# h6 h6-eth0:s4-eth1
+# s1 lo:  s1-eth1:h1-eth0 s1-eth2:h2-eth0 s1-eth3:h3-eth0 s1-eth4:s2-eth2 s1-eth5:s3-eth1 s1-eth6:s4-eth2
+# s2 lo:  s2-eth1:h4-eth0 s2-eth2:s1-eth4 s2-eth3:s5-eth2
+# s3 lo:  s3-eth1:s1-eth5 s3-eth2:s5-eth3
+# s4 lo:  s4-eth1:h6-eth0 s4-eth2:s1-eth6 s4-eth3:s5-eth4
+# s5 lo:  s5-eth1:h5-eth0 s5-eth2:s2-eth3 s5-eth3:s3-eth2 s5-eth4:s4-eth3
+
+# H1-H5 via s3
+# H4-H6 via s5
 
 
 #5 switches
@@ -180,29 +192,29 @@ def _handle_ConnectionUp (event):
     print "ConnectionUp: ",dpidToStr(event.connection.dpid)
 
     for m in event.connection.features.ports:
-     if m.name == "s1-eth1":
-       s1_dpid = event.connection.dpid
-       print "s1_dpid=", s1_dpid
-     elif m.name == "s2-eth1":
-       s2_dpid = event.connection.dpid
-       print "s2_dpid=", s2_dpid
-     elif m.name == "s3-eth1":
-       s3_dpid = event.connection.dpid
-       print "s3_dpid=", s3_dpid
-     elif m.name == "s4-eth1":
-       s4_dpid = event.connection.dpid
-       print "s4_dpid=", s4_dpid
-     elif m.name == "s5-eth1":
-       s5_dpid = event.connection.dpid
-       print "s5_dpid=", s5_dpid
+         if m.name == "s1-eth1":
+           s1_dpid = event.connection.dpid
+           print "s1_dpid=", s1_dpid
+         elif m.name == "s2-eth1":
+           s2_dpid = event.connection.dpid
+           print "s2_dpid=", s2_dpid
+         elif m.name == "s3-eth1":
+           s3_dpid = event.connection.dpid
+           print "s3_dpid=", s3_dpid
+         elif m.name == "s4-eth1":
+           s4_dpid = event.connection.dpid
+           print "s4_dpid=", s4_dpid
+         elif m.name == "s5-eth1":
+           s5_dpid = event.connection.dpid
+           print "s5_dpid=", s5_dpid
 
 def _handle_PacketIn(event):
     global s1_dpid, s2_dpid, s3_dpid, s4_dpid, s5_dpid
     packet=event.parsed
-    print "_handle_PacketIn is called, packet.type:", packet.type, " event.connection.dpid:", event.connection.dpid
+    print "_handle_PacketIn is called, packet.type:", packet.type," event.connection.dpid:", event.connection.dpid
 
 ##################################
-#Connection s1
+###Connection S1
     if event.connection.dpid==s1_dpid:
         a=packet.find('arp')
         if a and a.protodst=="10.0.0.1":
@@ -229,551 +241,747 @@ def _handle_PacketIn(event):
            msg = of.ofp_packet_out(data=event.ofp)
            msg.actions.append(of.ofp_action_output(port=6))
            event.connection.send(msg)
-#flows s1 basics
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.2"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.3"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+#AddFlows S1
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.1"
+        msg.match.nw_dst = "10.0.0.2"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.4"
-    msg.actions.append(of.ofp_action_output(port = 4))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.1"
+        msg.match.nw_dst = "10.0.0.3"
+        msg.actions.append(of.ofp_action_output(port = 3))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.5"
-    msg.actions.append(of.ofp_action_output(port = 5))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.1"
+        msg.match.nw_dst = "10.0.0.4"
+        msg.actions.append(of.ofp_action_output(port = 4))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.6"
-    msg.actions.append(of.ofp_action_output(port = 6))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.1"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 5))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.2"
-    msg.match.nw_dst = "10.0.0.1"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.1"
+        msg.match.nw_dst = "10.0.0.6"
+        msg.actions.append(of.ofp_action_output(port = 6))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.2"
-    msg.match.nw_dst = "10.0.0.3"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.2"
+        msg.match.nw_dst = "10.0.0.1"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
-    msg.match.nw_dst = "10.0.0.1"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.2"
+        msg.match.nw_dst = "10.0.0.3"
+        msg.actions.append(of.ofp_action_output(port = 3))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
-    msg.match.nw_dst = "10.0.0.2"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.2"
+        msg.match.nw_dst = "10.0.0.4"
+        msg.actions.append(of.ofp_action_output(port = 4))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.1"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.2"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 5))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.2"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.2"
+        msg.match.nw_dst = "10.0.0.6"
+        msg.actions.append(of.ofp_action_output(port = 6))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.3"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.3"
+        msg.match.nw_dst = "10.0.0.1"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.6"
-    msg.actions.append(of.ofp_action_output(port = 6))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.3"
+        msg.match.nw_dst = "10.0.0.2"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
-    msg.match.nw_dst = "10.0.0.1"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.3"
+        msg.match.nw_dst = "10.0.0.4"
+        msg.actions.append(of.ofp_action_output(port = 4))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
-    msg.match.nw_dst = "10.0.0.2"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.3"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 5))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
-    msg.match.nw_dst = "10.0.0.3"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.3"
+        msg.match.nw_dst = "10.0.0.6"
+        msg.actions.append(of.ofp_action_output(port = 6))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.6"
-    msg.match.nw_dst = "10.0.0.1"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.4"
+        msg.match.nw_dst = "10.0.0.1"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.6"
-    msg.match.nw_dst = "10.0.0.2"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.4"
+        msg.match.nw_dst = "10.0.0.2"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.6"
-    msg.match.nw_dst = "10.0.0.3"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.4"
+        msg.match.nw_dst = "10.0.0.3"
+        msg.actions.append(of.ofp_action_output(port = 3))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.6"
-    msg.match.nw_dst = "10.0.0.4"
-    msg.actions.append(of.ofp_action_output(port = 4))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.1"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-######### s2 connection
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.2"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.3"
+        msg.actions.append(of.ofp_action_output(port = 3))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.6"
+        msg.match.nw_dst = "10.0.0.1"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.6"
+        msg.match.nw_dst = "10.0.0.2"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.6"
+        msg.match.nw_dst = "10.0.0.3"
+        msg.actions.append(of.ofp_action_output(port = 3))
+        event.connection.send(msg)
+
+####Connection S2
     if event.connection.dpid==s2_dpid:
-       a=packet.find('arp')
-       if a and a.protodst=="10.0.0.4":
+        a=packet.find('arp')
+        if a and a.protodst=="10.0.0.4":
           msg = of.ofp_packet_out(data=event.ofp)
           msg.actions.append(of.ofp_action_output(port=1))
           event.connection.send(msg)
-       if a and a.protodst=="10.0.0.1":
+        if a and a.protodst=="10.0.0.1":
           msg = of.ofp_packet_out(data=event.ofp)
           msg.actions.append(of.ofp_action_output(port=2))
           event.connection.send(msg)
-       if a and a.protodst=="10.0.0.2":
+        if a and a.protodst=="10.0.0.2":
           msg = of.ofp_packet_out(data=event.ofp)
           msg.actions.append(of.ofp_action_output(port=2))
           event.connection.send(msg)
-       if a and a.protodst=="10.0.0.3":
+        if a and a.protodst=="10.0.0.3":
           msg = of.ofp_packet_out(data=event.ofp)
           msg.actions.append(of.ofp_action_output(port=2))
           event.connection.send(msg)
-       if a and a.protodst=="10.0.0.5":
+        if a and a.protodst=="10.0.0.5":
           msg = of.ofp_packet_out(data=event.ofp)
           msg.actions.append(of.ofp_action_output(port=3))
           event.connection.send(msg)
-       if a and a.protodst=="10.0.0.6":
+        if a and a.protodst=="10.0.0.6":
           msg = of.ofp_packet_out(data=event.ofp)
           msg.actions.append(of.ofp_action_output(port=3))
           event.connection.send(msg)
 
-#Add flows s2
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.4"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+#AddFlows S2
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.1"
+        msg.match.nw_dst = "10.0.0.4"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.5"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.2"
+        msg.match.nw_dst = "10.0.0.4"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.2"
-    msg.match.nw_dst = "10.0.0.4"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.3"
+        msg.match.nw_dst = "10.0.0.4"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.2"
-    msg.match.nw_dst = "10.0.0.5"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.4"
+        msg.match.nw_dst = "10.0.0.1"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
-    msg.match.nw_dst = "10.0.0.4"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.4"
+        msg.match.nw_dst = "10.0.0.2"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
-    msg.match.nw_dst = "10.0.0.5"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.4"
+        msg.match.nw_dst = "10.0.0.3"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.1"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.4"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 3))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.2"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.4"
+        msg.match.nw_dst = "10.0.0.6"
+        msg.actions.append(of.ofp_action_output(port = 3))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.3"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.4"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.5"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.6"
+        msg.match.nw_dst = "10.0.0.4"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.6"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+####Connection S3
+    if event.connection.dpid==s3_dpid:
+        a=packet.find('arp')
+        if a and a.protodst=="10.0.0.1":
+           msg = of.ofp_packet_out(data=event.ofp)
+           msg.actions.append(of.ofp_action_output(port=1))
+           event.connection.send(msg)
+        if a and a.protodst=="10.0.0.2":
+           msg = of.ofp_packet_out(data=event.ofp)
+           msg.actions.append(of.ofp_action_output(port=1))
+           event.connection.send(msg)
+        if a and a.protodst=="10.0.0.3":
+           msg = of.ofp_packet_out(data=event.ofp)
+           msg.actions.append(of.ofp_action_output(port=1))
+           event.connection.send(msg)
+        if a and a.protodst=="10.0.0.5":
+           msg = of.ofp_packet_out(data=event.ofp)
+           msg.actions.append(of.ofp_action_output(port=2))
+           event.connection.send(msg)
+        if a and a.protodst=="10.0.0.4":
+           msg = of.ofp_packet_out(data=event.ofp)
+           msg.actions.append(of.ofp_action_output(port=2))
+           event.connection.send(msg)
+        if a and a.protodst=="10.0.0.6":
+           msg = of.ofp_packet_out(data=event.ofp)
+           msg.actions.append(of.ofp_action_output(port=2))
+           event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
-    msg.match.nw_dst = "10.0.0.1"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+#AddFlows S3
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.1"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
-    msg.match.nw_dst = "10.0.0.2"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.2"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
-    msg.match.nw_dst = "10.0.0.3"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.3"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
-    msg.match.nw_dst = "10.0.0.4"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.1"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.6"
-    msg.match.nw_dst = "10.0.0.4"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.2"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-#####Connection s3
- if event.connection.dpid==s3_dpid:
-    a=packet.find('arp')
-    if a and a.protodst=="10.0.0.5":
-       msg = of.ofp_packet_out(data=event.ofp)
-       msg.actions.append(of.ofp_action_output(port=1))
-       event.connection.send(msg)
-    if a and a.protodst=="10.0.0.4":
-       msg = of.ofp_packet_out(data=event.ofp)
-       msg.actions.append(of.ofp_action_output(port=1))
-       event.connection.send(msg)
-    if a and a.protodst=="10.0.0.6":
-       msg = of.ofp_packet_out(data=event.ofp)
-       msg.actions.append(of.ofp_action_output(port=1))
-       event.connection.send(msg)
-    if a and a.protodst=="10.0.0.1":
-       msg = of.ofp_packet_out(data=event.ofp)
-       msg.actions.append(of.ofp_action_output(port=2))
-       event.connection.send(msg)
-    if a and a.protodst=="10.0.0.2":
-       msg = of.ofp_packet_out(data=event.ofp)
-       msg.actions.append(of.ofp_action_output(port=2))
-       event.connection.send(msg)
-    if a and a.protodst=="10.0.0.3":
-       msg = of.ofp_packet_out(data=event.ofp)
-       msg.actions.append(of.ofp_action_output(port=2))
-       event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.3"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-#Add flows s3
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.3"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+#####Connection S4
+    if event.connection.dpid==s4_dpid:
+        a=packet.find('arp')
+        if a and a.protodst=="10.0.0.6":
+          msg = of.ofp_packet_out(data=event.ofp)
+          msg.actions.append(of.ofp_action_output(port=1))
+          event.connection.send(msg)
+        if a and a.protodst=="10.0.0.1":
+          msg = of.ofp_packet_out(data=event.ofp)
+          msg.actions.append(of.ofp_action_output(port=2))
+          event.connection.send(msg)
+        if a and a.protodst=="10.0.0.2":
+          msg = of.ofp_packet_out(data=event.ofp)
+          msg.actions.append(of.ofp_action_output(port=2))
+          event.connection.send(msg)
+        if a and a.protodst=="10.0.0.3":
+          msg = of.ofp_packet_out(data=event.ofp)
+          msg.actions.append(of.ofp_action_output(port=2))
+          event.connection.send(msg)
+        if a and a.protodst=="10.0.0.4":
+          msg = of.ofp_packet_out(data=event.ofp)
+          msg.actions.append(of.ofp_action_output(port=3))
+          event.connection.send(msg)
+        if a and a.protodst=="10.0.0.5":
+          msg = of.ofp_packet_out(data=event.ofp)
+          msg.actions.append(of.ofp_action_output(port=3))
+          event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.4"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+#AddFlows S4
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.1"
+        msg.match.nw_dst = "10.0.0.6"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.2"
-    msg.match.nw_dst = "10.0.0.3"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.2"
+        msg.match.nw_dst = "10.0.0.6"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.2"
-    msg.match.nw_dst = "10.0.0.4"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.3"
+        msg.match.nw_dst = "10.0.0.6"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
-    msg.match.nw_dst = "10.0.0.1"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.4"
+        msg.match.nw_dst = "10.0.0.6"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
-    msg.match.nw_dst = "10.0.0.2"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.6"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
-    msg.match.nw_dst = "10.0.0.4"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.6"
+        msg.match.nw_dst = "10.0.0.1"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
-    msg.match.nw_dst = "10.0.0.5"
-    msg.actions.append(of.ofp_action_output(port = 3))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.6"
+        msg.match.nw_dst = "10.0.0.2"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
-    msg.match.nw_dst = "10.0.0.6"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.6"
+        msg.match.nw_dst = "10.0.0.3"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.2"
-    msg.actions.append(of.ofp_action_output(port = 2))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.6"
+        msg.match.nw_dst = "10.0.0.4"
+        msg.actions.append(of.ofp_action_output(port = 3))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.3"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.6"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 3))
+        event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
-    msg.match.nw_dst = "10.0.0.3"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+###Connection S5
+    if event.connection.dpid==s5_dpid:
+        a=packet.find('arp')
+        if a and a.protodst=="10.0.0.5":
+          msg = of.ofp_packet_out(data=event.ofp)
+          msg.actions.append(of.ofp_action_output(port=1))
+          event.connection.send(msg)
+        if a and a.protodst=="10.0.0.1":
+          msg = of.ofp_packet_out(data=event.ofp)
+          msg.actions.append(of.ofp_action_output(port=3))
+          event.connection.send(msg)
+        if a and a.protodst=="10.0.0.2":
+          msg = of.ofp_packet_out(data=event.ofp)
+          msg.actions.append(of.ofp_action_output(port=3))
+          event.connection.send(msg)
+        if a and a.protodst=="10.0.0.3":
+          msg = of.ofp_packet_out(data=event.ofp)
+          msg.actions.append(of.ofp_action_output(port=3))
+          event.connection.send(msg)
+        if a and a.protodst=="10.0.0.4":
+          msg = of.ofp_packet_out(data=event.ofp)
+          msg.actions.append(of.ofp_action_output(port=2))
+          event.connection.send(msg)
+        if a and a.protodst=="10.0.0.6":
+          msg = of.ofp_packet_out(data=event.ofp)
+          msg.actions.append(of.ofp_action_output(port=4))
+          event.connection.send(msg)
 
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.6"
-    msg.match.nw_dst = "10.0.0.3"
-    msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
+#AddFlows S5
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.1"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.2"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.3"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.4"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.4"
+        msg.match.nw_dst = "10.0.0.6"
+        msg.actions.append(of.ofp_action_output(port = 4))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.1"
+        msg.actions.append(of.ofp_action_output(port = 3))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.2"
+        msg.actions.append(of.ofp_action_output(port = 3))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.3"
+        msg.actions.append(of.ofp_action_output(port = 3))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.4"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.5"
+        msg.match.nw_dst = "10.0.0.6"
+        msg.actions.append(of.ofp_action_output(port = 4))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.6"
+        msg.match.nw_dst = "10.0.0.4"
+        msg.actions.append(of.ofp_action_output(port = 2))
+        event.connection.send(msg)
+
+        msg = of.ofp_flow_mod()
+        msg.priority =100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.6"
+        msg.match.nw_dst = "10.0.0.5"
+        msg.actions.append(of.ofp_action_output(port = 1))
+        event.connection.send(msg)
+
+###############################################################################
+
+def launch():
+    core.openflow.addListenerByName("PortStatsReceived",_handle_portstats_received)
+    core.openflow.addListenerByName("ConnectionUp", _handle_ConnectionUp)
+    core.openflow.addListenerByName("PacketIn",_handle_PacketIn)
