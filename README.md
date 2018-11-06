@@ -7,14 +7,17 @@ Entregas:
                 - Demonstração da implementação
                 - Relatório com resultados parciais
 ```
+
 ```
 26/11           - Prova Escrita
                 - LTE e Tecnologias IoT (Tecnologias sem fio)
 ```
+
 ```
 28/11           - Implementação das Políticas Dinâmicas
                 - Relatório Final
 ```
 
 ```
-03/12          
+03/12           - Prova Final    
+```
