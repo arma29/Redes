@@ -1,7 +1,5 @@
 #!/usr/bin/python
-#sudo -E python mytopo.py create
-#sudo mn -c clear
-	
+#sudo -E python mytopo.py
 
 #Created by Arnaldo, list 2 mininet.
 from mininet.topo import Topo
