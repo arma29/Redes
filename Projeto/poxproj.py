@@ -1,6 +1,6 @@
 # ext/poxl2.py
 # cd pox/
-# python pox.py --verbose poxproj py\log --no-default --file=/tmp/mylog.log
+# python pox.py --verbose poxproj py log --no-default --file=/tmp/mylog.log
 
 from pox.core import core
 import pox.openflow.libopenflow_01 as of
@@ -27,18 +27,18 @@ import time
 #c0
 
 #Rules
-    # Servidor nº 1 para servidor nº 2
-    # Servidor nº 2 para o servidor nº 3
-    # Servidor nº 3 para o servidor nº
+    # Servidor n 1 para servidor n 2
+    # Servidor n 2 para o servidor n 3
+    # Servidor n 3 para o servidor n
     #
-    # Cliente nº 1, nº 2 do cliente, nº 3 do cliente
+    # Cliente n 1, n 2 do cliente, n 3 do cliente
     # podem se comunicar entre si
 
 # Switch 1, Switch 2 e Switch 3
-# podem se comunicar com o controlador de domínio
-# (ao contrário de todos os outros componentes,
-# o controlador de domínio é executado diretamente na VM do ONUS
-# e não num host virtual separado).
+# podem se comunicar com o controlador de dominio
+# (ao contrario de todos os outros componentes,
+# o controlador de dominio eh executado diretamente na VM do ONUS
+# e nao num host virtual separado).
 
 #3 Switches
 s1_dpid=0
@@ -467,3 +467,10 @@ def _handle_PacketIn(event):
     msg.match.nw_dst = "10.0.0.1"
     msg.actions.append(of.ofp_action_output(port = 4))
     event.connection.send(msg)
+    
+###############################################################################
+
+def launch():
+    core.openflow.addListenerByName("PortStatsReceived",_handle_portstats_received)
+    core.openflow.addListenerByName("ConnectionUp", _handle_ConnectionUp)
+    core.openflow.addListenerByName("PacketIn",_handle_PacketIn)
