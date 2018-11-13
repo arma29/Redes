@@ -34,19 +34,19 @@ class MyTopo(Topo):
 
 
         #Host-Switch Links
-        self.addLink(client1,s1)
-        self.addLink(server1,s1)
+        self.addLink(client1,s1, bw=0.03)
+        self.addLink(server1,s1, bw=0.03)
 
-        self.addLink(client2,s2)
-        self.addLink(server2,s2)
+        self.addLink(client2,s2, bw=0.03)
+        self.addLink(server2,s2, bw=0.03)
 
-        self.addLink(client3,s3)
-        self.addLink(server3,s3)
+        self.addLink(client3,s3, bw=0.03)
+        self.addLink(server3,s3, bw=0.03)
 
         #Switch-Switch Link
-        self.addLink(s1,s2)
-        self.addLink(s1,s3)
-        self.addLink(s2,s3)
+        self.addLink(s1,s2, bw=0.03)
+        self.addLink(s1,s3, bw=0.03)
+        self.addLink(s2,s3, bw=0.03)
 
 
 
