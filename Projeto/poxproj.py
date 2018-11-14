@@ -167,10 +167,10 @@ def _handle_PacketIn(event):
     print "_handle_PacketIn is called, packet.type:", packet.type," event.connection.dpid:", event.connection.dpid
 ##################
 # client1 - 10:01
-# client2 - 10:03
-# client3 - 10:05
-# server1 - 10:02
-# server2 - 10:04
+# client2 - 10:02
+# client3 - 10:03
+# server1 - 10:04
+# server2 - 10:05
 # server3 - 10:06
 
 ###Connection S1 #REVER
@@ -182,7 +182,7 @@ def _handle_PacketIn(event):
            event.connection.send(msg)
         if a and a.protodst=="10.0.0.2":
            msg = of.ofp_packet_out(data=event.ofp)
-           msg.actions.append(of.ofp_action_output(port=2))
+           msg.actions.append(of.ofp_action_output(port=3))
            event.connection.send(msg)
         if a and a.protodst=="10.0.0.3":
            msg = of.ofp_packet_out(data=event.ofp)
@@ -190,7 +190,7 @@ def _handle_PacketIn(event):
            event.connection.send(msg)
         if a and a.protodst=="10.0.0.4":
            msg = of.ofp_packet_out(data=event.ofp)
-           msg.actions.append(of.ofp_action_output(port=3))
+           msg.actions.append(of.ofp_action_output(port=2))
            event.connection.send(msg)
         if a and a.protodst=="10.0.0.5":
            msg = of.ofp_packet_out(data=event.ofp)
@@ -209,8 +209,8 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.2"
+    msg.match.nw_src = "10.0.0.5"
+    msg.match.nw_dst = "10.0.0.4"
     msg.actions.append(of.ofp_action_output(port = 2))
     event.connection.send(msg)
 
@@ -221,7 +221,7 @@ def _handle_PacketIn(event):
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
     msg.match.nw_src = "10.0.0.6"
-    msg.match.nw_dst = "10.0.0.2"
+    msg.match.nw_dst = "10.0.0.4"
     msg.actions.append(of.ofp_action_output(port = 2))
     event.connection.send(msg)
 
@@ -231,8 +231,8 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.2"
-    msg.match.nw_dst = "10.0.0.4"
+    msg.match.nw_src = "10.0.0.4"
+    msg.match.nw_dst = "10.0.0.5"
     msg.actions.append(of.ofp_action_output(port = 3))
     event.connection.send(msg)
 
@@ -242,7 +242,7 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.2"
+    msg.match.nw_src = "10.0.0.4"
     msg.match.nw_dst = "10.0.0.6"
     msg.actions.append(of.ofp_action_output(port = 3))
     event.connection.send(msg)
@@ -254,7 +254,7 @@ def _handle_PacketIn(event):
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
     msg.match.nw_src = "10.0.0.6"
-    msg.match.nw_dst = "10.0.0.4"
+    msg.match.nw_dst = "10.0.0.5"
     msg.actions.append(of.ofp_action_output(port = 3))
     event.connection.send(msg)
 
@@ -265,7 +265,7 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
+    msg.match.nw_src = "10.0.0.2"
     msg.match.nw_dst = "10.0.0.1"
     msg.actions.append(of.ofp_action_output(port = 1))
     event.connection.send(msg)
@@ -276,7 +276,7 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
+    msg.match.nw_src = "10.0.0.3"
     msg.match.nw_dst = "10.0.0.1"
     msg.actions.append(of.ofp_action_output(port = 1))
     event.connection.send(msg)
@@ -288,7 +288,7 @@ def _handle_PacketIn(event):
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
     msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.3"
+    msg.match.nw_dst = "10.0.0.2"
     msg.actions.append(of.ofp_action_output(port = 3))
     event.connection.send(msg)
 
@@ -299,7 +299,7 @@ def _handle_PacketIn(event):
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
     msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.5"
+    msg.match.nw_dst = "10.0.0.3"
     msg.actions.append(of.ofp_action_output(port = 3))
     event.connection.send(msg)
 
@@ -309,19 +309,19 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
-    msg.match.nw_dst = "10.0.0.3"
+    msg.match.nw_src = "10.0.0.3"
+    msg.match.nw_dst = "10.0.0.2"
     msg.actions.append(of.ofp_action_output(port = 3))
     event.connection.send(msg)
 
 ###Connection S2
     if event.connection.dpid==s1_dpid:
         a=packet.find('arp')
-        if a and a.protodst=="10.0.0.3":
+        if a and a.protodst=="10.0.0.2":
            msg = of.ofp_packet_out(data=event.ofp)
            msg.actions.append(of.ofp_action_output(port=1))
            event.connection.send(msg)
-        if a and a.protodst=="10.0.0.4":
+        if a and a.protodst=="10.0.0.5":
            msg = of.ofp_packet_out(data=event.ofp)
            msg.actions.append(of.ofp_action_output(port=2))
            event.connection.send(msg)
@@ -329,11 +329,11 @@ def _handle_PacketIn(event):
            msg = of.ofp_packet_out(data=event.ofp)
            msg.actions.append(of.ofp_action_output(port=4))
            event.connection.send(msg)
-        if a and a.protodst=="10.0.0.2":
+        if a and a.protodst=="10.0.0.3":
            msg = of.ofp_packet_out(data=event.ofp)
            msg.actions.append(of.ofp_action_output(port=4))
            event.connection.send(msg)
-        if a and a.protodst=="10.0.0.5":
+        if a and a.protodst=="10.0.0.4":
            msg = of.ofp_packet_out(data=event.ofp)
            msg.actions.append(of.ofp_action_output(port=4))
            event.connection.send(msg)
@@ -349,8 +349,8 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.2"
-    msg.match.nw_dst = "10.0.0.4"
+    msg.match.nw_src = "10.0.0.4"
+    msg.match.nw_dst = "10.0.0.5"
     msg.actions.append(of.ofp_action_output(port = 2))
     event.connection.send(msg)
 
@@ -361,7 +361,7 @@ def _handle_PacketIn(event):
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
     msg.match.nw_src = "10.0.0.6"
-    msg.match.nw_dst = "10.0.0.4"
+    msg.match.nw_dst = "10.0.0.5"
     msg.actions.append(of.ofp_action_output(port = 2))
     event.connection.send(msg)
 
@@ -371,7 +371,7 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
+    msg.match.nw_src = "10.0.0.5"
     msg.match.nw_dst = "10.0.0.6"
     msg.actions.append(of.ofp_action_output(port = 4))
     event.connection.send(msg)
@@ -382,8 +382,8 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.2"
+    msg.match.nw_src = "10.0.0.5"
+    msg.match.nw_dst = "10.0.0.4"
     msg.actions.append(of.ofp_action_output(port = 4))
     event.connection.send(msg)
 
@@ -393,7 +393,7 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.2"
+    msg.match.nw_src = "10.0.0.4"
     msg.match.nw_dst = "10.0.0.6"
     msg.actions.append(of.ofp_action_output(port = 4))
     event.connection.send(msg)
@@ -406,7 +406,7 @@ def _handle_PacketIn(event):
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
     msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.3"
+    msg.match.nw_dst = "10.0.0.2"
     msg.actions.append(of.ofp_action_output(port = 1))
     event.connection.send(msg)
 
@@ -416,8 +416,8 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
-    msg.match.nw_dst = "10.0.0.3"
+    msg.match.nw_src = "10.0.0.3"
+    msg.match.nw_dst = "10.0.0.2"
     msg.actions.append(of.ofp_action_output(port = 1))
     event.connection.send(msg)
 
@@ -427,8 +427,8 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
-    msg.match.nw_dst = "10.0.0.5"
+    msg.match.nw_src = "10.0.0.2"
+    msg.match.nw_dst = "10.0.0.3"
     msg.actions.append(of.ofp_action_output(port = 4))
     event.connection.send(msg)
 
@@ -438,7 +438,7 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
+    msg.match.nw_src = "10.0.0.2"
     msg.match.nw_dst = "10.0.0.1"
     msg.actions.append(of.ofp_action_output(port = 4))
     event.connection.send(msg)
@@ -450,14 +450,14 @@ def _handle_PacketIn(event):
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
     msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.5"
+    msg.match.nw_dst = "10.0.0.3"
     msg.actions.append(of.ofp_action_output(port = 4))
     event.connection.send(msg)
 
 ###Connection S3
     if event.connection.dpid==s1_dpid:
         a=packet.find('arp')
-        if a and a.protodst=="10.0.0.5":
+        if a and a.protodst=="10.0.0.3":
            msg = of.ofp_packet_out(data=event.ofp)
            msg.actions.append(of.ofp_action_output(port=1))
            event.connection.send(msg)
@@ -473,11 +473,11 @@ def _handle_PacketIn(event):
            msg = of.ofp_packet_out(data=event.ofp)
            msg.actions.append(of.ofp_action_output(port=3))
            event.connection.send(msg)
-        if a and a.protodst=="10.0.0.3":
+        if a and a.protodst=="10.0.0.4":
            msg = of.ofp_packet_out(data=event.ofp)
            msg.actions.append(of.ofp_action_output(port=3))
            event.connection.send(msg)
-        if a and a.protodst=="10.0.0.4":
+        if a and a.protodst=="10.0.0.5":
            msg = of.ofp_packet_out(data=event.ofp)
            msg.actions.append(of.ofp_action_output(port=3))
            event.connection.send(msg)
@@ -489,7 +489,7 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.2"
+    msg.match.nw_src = "10.0.0.4"
     msg.match.nw_dst = "10.0.0.6"
     msg.actions.append(of.ofp_action_output(port = 2))
     event.connection.send(msg)
@@ -501,7 +501,7 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
+    msg.match.nw_src = "10.0.0.5"
     msg.match.nw_dst = "10.0.0.6"
     msg.actions.append(of.ofp_action_output(port = 2))
     event.connection.send(msg)
@@ -513,7 +513,7 @@ def _handle_PacketIn(event):
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
     msg.match.nw_src = "10.0.0.6"
-    msg.match.nw_dst = "10.0.0.2"
+    msg.match.nw_dst = "10.0.0.4"
     msg.actions.append(of.ofp_action_output(port = 3))
     event.connection.send(msg)
 
@@ -524,7 +524,7 @@ def _handle_PacketIn(event):
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
     msg.match.nw_src = "10.0.0.6"
-    msg.match.nw_dst = "10.0.0.4"
+    msg.match.nw_dst = "10.0.0.5"
     msg.actions.append(of.ofp_action_output(port = 3))
     event.connection.send(msg)
 
@@ -534,8 +534,8 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.4"
-    msg.match.nw_dst = "10.0.0.2"
+    msg.match.nw_src = "10.0.0.5"
+    msg.match.nw_dst = "10.0.0.4"
     msg.actions.append(of.ofp_action_output(port = 3))
     event.connection.send(msg)
 
@@ -547,7 +547,7 @@ def _handle_PacketIn(event):
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
     msg.match.nw_src = "10.0.0.1"
-    msg.match.nw_dst = "10.0.0.5"
+    msg.match.nw_dst = "10.0.0.3"
     msg.actions.append(of.ofp_action_output(port = 1))
     event.connection.send(msg)
 
@@ -557,20 +557,9 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.3"
-    msg.match.nw_dst = "10.0.0.5"
+    msg.match.nw_src = "10.0.0.2"
+    msg.match.nw_dst = "10.0.0.3"
     msg.actions.append(of.ofp_action_output(port = 1))
-    event.connection.send(msg)
-
-    #Client3 - Client1
-    msg = of.ofp_flow_mod()
-    msg.priority =100
-    msg.idle_timeout = 0
-    msg.hard_timeout = 0
-    msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
-    msg.match.nw_dst = "10.0.0.1"
-    msg.actions.append(of.ofp_action_output(port = 4))
     event.connection.send(msg)
 
     #Client3 - Client1
@@ -590,8 +579,19 @@ def _handle_PacketIn(event):
     msg.idle_timeout = 0
     msg.hard_timeout = 0
     msg.match.dl_type = 0x0800
-    msg.match.nw_src = "10.0.0.5"
-    msg.match.nw_dst = "10.0.0.3"
+    msg.match.nw_src = "10.0.0.3"
+    msg.match.nw_dst = "10.0.0.2"
+    msg.actions.append(of.ofp_action_output(port = 4))
+    event.connection.send(msg)
+
+    #Client2 - Client1
+    msg = of.ofp_flow_mod()
+    msg.priority =100
+    msg.idle_timeout = 0
+    msg.hard_timeout = 0
+    msg.match.dl_type = 0x0800
+    msg.match.nw_src = "10.0.0.2"
+    msg.match.nw_dst = "10.0.0.1"
     msg.actions.append(of.ofp_action_output(port = 4))
     event.connection.send(msg)
 

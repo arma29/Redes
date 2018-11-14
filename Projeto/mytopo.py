@@ -64,17 +64,23 @@ def myNetwork():
 
     #nao sei se precisa
 	client1=net.get('client1')
+	print "Client 1 - ", client1.IP()
 	server1=net.get('server1')
+	print "Server 1 - ", server1.IP()
 	client2=net.get('client2')
+	print "Client 2 - ", client2.IP()
 	server2=net.get('server2')
+	print "Server 2 - ", server2.IP()
 	client3=net.get('client3')
+	print "Client 3 - ", client3.IP()
 	server3=net.get('server3')
+	print "Server 3 - ", server3.IP()
 
 	client1.setMAC("0:0:0:0:0:1")
-	server1.setMAC("0:0:0:0:0:2")
-	client2.setMAC("0:0:0:0:0:3")
-	server2.setMAC("0:0:0:0:0:4")
-	client3.setMAC("0:0:0:0:0:5")
+	client2.setMAC("0:0:0:0:0:2")
+	client3.setMAC("0:0:0:0:0:3")
+	server1.setMAC("0:0:0:0:0:4")
+	server2.setMAC("0:0:0:0:0:5")
 	server3.setMAC("0:0:0:0:0:6")
 
 	info( '\n' )
