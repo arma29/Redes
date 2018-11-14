@@ -143,10 +143,10 @@ def _handle_PacketIn(event):
             msg.actions.append(of.ofp_action_output(port=3))
             event.connection.send(msg)
 
-        # AddFlows switch_1
-        """
-        client_1 -> client_2 OK
-        """
+        # AddFlows s1
+        #Client - Client
+
+        #client1 - client2 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -157,9 +157,8 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=3))
         event.connection.send(msg)
 
-        """
-        client_1 -> client_3 OK
-        """
+
+        #client1 - client3 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -170,9 +169,8 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=3))
         event.connection.send(msg)
 
-        """
-        client_2 -> client_1 OK
-        """
+
+        #client2 - client1 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -183,9 +181,8 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=1))
         event.connection.send(msg)
 
-        """
-        client_3 -> client_1 OK
-        """
+
+        #client3 - client1 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -196,9 +193,8 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=1))
         event.connection.send(msg)
 
-        """
-        client_3 -> client_2 OK
-        """
+
+        #client3 - client2 Intermediare
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -209,9 +205,9 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=3))
         event.connection.send(msg)
 
-        """
-        server_1 -> server_2 OK
-        """
+        #Server - Server
+
+        #server1 - server2 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -223,8 +219,7 @@ def _handle_PacketIn(event):
         event.connection.send(msg)
 
         """
-        server_1 -> server_3 OK
-        """
+        #server1 - server3 Test
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -234,10 +229,10 @@ def _handle_PacketIn(event):
         msg.match.nw_dst = "10.0.0.6"
         msg.actions.append(of.ofp_action_output(port=3))
         event.connection.send(msg)
+        """
 
         """
-        server_2 -> server_1 OK
-        """
+        #server2 - server1 Test
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -247,10 +242,9 @@ def _handle_PacketIn(event):
         msg.match.nw_dst = "10.0.0.4"
         msg.actions.append(of.ofp_action_output(port=2))
         event.connection.send(msg)
+        """
 
-        """
-        server_3 -> server_1 OK
-        """
+        #server3 - server1 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -262,8 +256,7 @@ def _handle_PacketIn(event):
         event.connection.send(msg)
 
         """
-        server_3 -> server_2 OK
-        """
+        #server3 - server2 Test
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -273,6 +266,7 @@ def _handle_PacketIn(event):
         msg.match.nw_dst = "10.0.0.5"
         msg.actions.append(of.ofp_action_output(port=3))
         event.connection.send(msg)
+        """
 
     # Switch 2
     if event.connection.dpid == s2_dpid:
@@ -302,10 +296,10 @@ def _handle_PacketIn(event):
             msg.actions.append(of.ofp_action_output(port=3))
             event.connection.send(msg)
 
-        # AddFlows switch_2
-        """
-        client_1 -> client_2 OK
-        """
+        # AddFlows s2
+        #Client - Client
+
+        #client1 - client2 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -316,22 +310,8 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=1))
         event.connection.send(msg)
 
-        """
-        client_1 -> client_3 OK
-        """
-        msg = of.ofp_flow_mod()
-        msg.priority = 100
-        msg.idle_timeout = 0
-        msg.hard_timeout = 0
-        msg.match.dl_type = 0x0800
-        msg.match.nw_src = "10.0.0.1"
-        msg.match.nw_dst = "10.0.0.3"
-        msg.actions.append(of.ofp_action_output(port=3))
-        event.connection.send(msg)
 
-        """
-        client_2 -> client_1 OK
-        """
+        #client2 - client1 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -342,9 +322,8 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=3))
         event.connection.send(msg)
 
-        """
-        client_2 -> client_3 OK
-        """
+
+        #client2 - client3 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -355,9 +334,8 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=3))
         event.connection.send(msg)
 
-        """
-        client_3 -> client_2 OK
-        """
+
+        #client3 - client2 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -368,9 +346,22 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=1))
         event.connection.send(msg)
 
-        """
-        server_1 -> server_2 OK
-        """
+
+        #client1 - client3 Intermediare
+        msg = of.ofp_flow_mod()
+        msg.priority = 100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.1"
+        msg.match.nw_dst = "10.0.0.3"
+        msg.actions.append(of.ofp_action_output(port=3))
+        event.connection.send(msg)
+
+
+        #Server - Server
+
+        #server1 - server2 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -382,8 +373,7 @@ def _handle_PacketIn(event):
         event.connection.send(msg)
 
         """
-        server_1 -> server_3 OK
-        """
+        #server1 - server3 Test
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -393,10 +383,10 @@ def _handle_PacketIn(event):
         msg.match.nw_dst = "10.0.0.6"
         msg.actions.append(of.ofp_action_output(port=3))
         event.connection.send(msg)
+        """
 
         """
-        server_2 -> server_1 OK
-        """
+        #server2 - server1 Test
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -406,10 +396,9 @@ def _handle_PacketIn(event):
         msg.match.nw_dst = "10.0.0.4"
         msg.actions.append(of.ofp_action_output(port=3))
         event.connection.send(msg)
+        """
 
-        """
-        server_2 -> server_3 OK
-        """
+        #server2 - server3 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -421,8 +410,7 @@ def _handle_PacketIn(event):
         event.connection.send(msg)
 
         """
-        server_3 -> server_2 OK
-        """
+        #server3 - server2 Test
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -432,6 +420,7 @@ def _handle_PacketIn(event):
         msg.match.nw_dst = "10.0.0.5"
         msg.actions.append(of.ofp_action_output(port=2))
         event.connection.send(msg)
+        """
 
     # Switch 3
     if event.connection.dpid == s3_dpid:
@@ -461,10 +450,10 @@ def _handle_PacketIn(event):
             msg.actions.append(of.ofp_action_output(port=2))
             event.connection.send(msg)
 
-        # AddFlows switch_3
-        """
-        client_1 -> client_3 OK
-        """
+        # AddFlows s3
+        #Client - Client
+
+        #client1 - client3 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -475,22 +464,9 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=1))
         event.connection.send(msg)
 
-        """
-        client_2 -> client_1 OK
-        """
-        msg = of.ofp_flow_mod()
-        msg.priority = 100
-        msg.idle_timeout = 0
-        msg.hard_timeout = 0
-        msg.match.dl_type = 0x0800
-        msg.match.nw_src = "10.0.0.2"
-        msg.match.nw_dst = "10.0.0.1"
-        msg.actions.append(of.ofp_action_output(port=3))
-        event.connection.send(msg)
 
-        """
-        client_2 -> client_3 OK
-        """
+
+        #client2 - client3 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -501,9 +477,8 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=1))
         event.connection.send(msg)
 
-        """
-        client_3 -> client_1 OK
-        """
+
+        #client3 - client1 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -514,9 +489,8 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=3))
         event.connection.send(msg)
 
-        """
-        client_3 -> client_2 OK
-        """
+
+        #client3 - client2 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -527,9 +501,22 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=3))
         event.connection.send(msg)
 
+
+        #client2 - client1 Intermediare
+        msg = of.ofp_flow_mod()
+        msg.priority = 100
+        msg.idle_timeout = 0
+        msg.hard_timeout = 0
+        msg.match.dl_type = 0x0800
+        msg.match.nw_src = "10.0.0.2"
+        msg.match.nw_dst = "10.0.0.1"
+        msg.actions.append(of.ofp_action_output(port=3))
+        event.connection.send(msg)
+
+        #Server - Server
+
         """
-        server_1 -> server_3 OK
-        """
+        #server1 - server3 Teste
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -539,10 +526,10 @@ def _handle_PacketIn(event):
         msg.match.nw_dst = "10.0.0.6"
         msg.actions.append(of.ofp_action_output(port=2))
         event.connection.send(msg)
-        
         """
-        server_2 -> server_1 OK
+
         """
+        #server2 - server1 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -552,10 +539,9 @@ def _handle_PacketIn(event):
         msg.match.nw_dst = "10.0.0.4"
         msg.actions.append(of.ofp_action_output(port=3))
         event.connection.send(msg)
+        """
 
-        """
-        server_2 -> server_3 OK
-        """
+        #server2 - server3 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -566,9 +552,8 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=2))
         event.connection.send(msg)
 
-        """
-        server_3 -> server_1 OK
-        """
+
+        #server3 - server1 Basic
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -580,8 +565,7 @@ def _handle_PacketIn(event):
         event.connection.send(msg)
 
         """
-        server_3 -> server_2 OK
-        """
+        #server3 - server2 Teste
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
@@ -590,7 +574,8 @@ def _handle_PacketIn(event):
         msg.match.nw_src = "10.0.0.6"
         msg.match.nw_dst = "10.0.0.5"
         msg.actions.append(of.ofp_action_output(port=3))
-        event.connection.send(msg)
+        event.connection.send(msg
+        """
 
 def launch ():
     core.openflow.addListenerByName("PortStatsReceived", _handle_portstats_received)

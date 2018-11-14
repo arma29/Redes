@@ -3,7 +3,7 @@
 #sudo mn -c clear
 
 
-#Created by Arnaldo, list 2 mininet.
+#Created by Arnaldo,  mininet.
 from mininet.topo import Topo
 from mininet.net import Mininet
 from mininet.node import CPULimitedHost
@@ -62,18 +62,19 @@ def myNetwork():
 	print "Dumping host connections"
 	dumpNodeConnections(net.hosts)
 
-    #nao sei se precisa
+
 	client1=net.get('client1')
-	print "Client 1 - ", client1.IP()
-	server1=net.get('server1')
-	print "Server 1 - ", server1.IP()
 	client2=net.get('client2')
-	print "Client 2 - ", client2.IP()
-	server2=net.get('server2')
-	print "Server 2 - ", server2.IP()
 	client3=net.get('client3')
-	print "Client 3 - ", client3.IP()
+	server2=net.get('server2')
+	server1=net.get('server1')
 	server3=net.get('server3')
+
+	print "Client 1 - ", client1.IP()
+	print "Client 2 - ", client2.IP()
+	print "Client 3 - ", client3.IP()
+	print "Server 1 - ", server1.IP()
+	print "Server 2 - ", server2.IP()
 	print "Server 3 - ", server3.IP()
 
 	client1.setMAC("0:0:0:0:0:1")
