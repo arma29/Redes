@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #sudo -E python mytopo.py create
 #sudo mn -c clear
-	
+
 
 #Created by Arnaldo, list 2 mininet.
 from mininet.topo import Topo
@@ -37,19 +37,19 @@ class MyTopo(Topo):
 
 
         #Host-Switch Links
-        self.addLink(client1,s1, bw=0.03)
-        self.addLink(server1,s1, bw=0.03)
+        self.addLink(client1,s1, bw=0.03,delay='1ms', loss=0, max_queue_size=100, use_htb=True)
+        self.addLink(server1,s1, bw=0.03, delay='1ms', loss=0, max_queue_size=100, use_htb=True)
 
-        self.addLink(client2,s2, bw=0.03)
-        self.addLink(server2,s2, bw=0.03)
+        self.addLink(client2,s2, bw=0.03, delay='1ms', loss=0, max_queue_size=100, use_htb=True)
+        self.addLink(server2,s2, bw=0.03, delay='1ms', loss=0, max_queue_size=100, use_htb=True)
 
-        self.addLink(client3,s3, bw=0.03)
-        self.addLink(server3,s3, bw=0.03)
+        self.addLink(client3,s3, bw=0.03, delay='1ms', loss=0, max_queue_size=100, use_htb=True)
+        self.addLink(server3,s3, bw=0.03, delay='1ms', loss=0, max_queue_size=100, use_htb=True)
 
         #Switch-Switch Link
-        self.addLink(s1,s2, bw=0.03)
-        self.addLink(s1,s3, bw=0.03)
-        self.addLink(s2,s3, bw=0.03)
+        self.addLink(s1,s2, bw=0.03, delay='1ms', loss=0, max_queue_size=100, use_htb=True)
+        self.addLink(s1,s3, bw=0.03, delay='1ms', loss=0, max_queue_size=100, use_htb=True)
+        self.addLink(s2,s3, bw=0.03, delay='1ms', loss=0, max_queue_size=100, use_htb=True)
 
 
 
