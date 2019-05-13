@@ -32,4 +32,191 @@ s5 lo:  s5-eth1:s1-eth4 s5-eth2:h7-eth0 s5-eth3:h8-eth0 s5-eth4:h9-eth0
 c0
 '''
 
+#5 switches
+s1_dpid=0
+s2_dpid=0
+s3_dpid=0
+s4_dpid=0
+s5_dpid=0
 
+#S1 tem 5 links
+s1_p1=0
+s1_p2=0
+s1_p3=0
+s1_p4=0
+s1_p5=0
+
+#S2 tem 3 links
+s2_p1=0
+s2_p2=0
+s2_p3=0
+
+#S3 tem 3 links
+s3_p1=0
+s3_p2=0
+s3_p3=0
+
+#S4 tem 3 links
+s4_p1=0
+s4_p2=0
+s4_p3=0
+
+#S5 tem 4 links
+s5_p1=0
+s5_p2=0
+s5_p3=0
+s5_p4=0
+
+########### pt2 pre
+#S1 tem 5 links
+pre_s1_p1=0
+pre_s1_p2=0
+pre_s1_p3=0
+pre_s1_p4=0
+pre_s1_p5=0
+
+#S2 tem 3 links
+pre_s2_p1=0
+pre_s2_p2=0
+pre_s2_p3=0
+
+#S3 tem 3 links
+pre_s3_p1=0
+pre_s3_p2=0
+pre_s3_p3=0
+
+#S4 tem 3 links
+pre_s4_p1=0
+pre_s4_p2=0
+pre_s4_p3=0
+
+#S5 tem 4 links
+pre_s5_p1=0
+pre_s5_p2=0
+pre_s5_p3=0
+pre_s5_p4=0
+
+#again , idk
+s1_dpid=0
+s2_dpid=0
+s3_dpid=0
+s4_dpid=0
+s5_dpid=0
+
+########################################
+
+def _handle_portstats_received(event):
+    global s1_dpid, s2_dpid, s3_dpid, s4_dpid, s5_dpid
+    global s1_p1, s1_p2, s1_p3, s1_p4, s1_p5, s2_p1, s2_p2, s2_p3, s3_p1, s3_p2, s3_p3, s4_p1, s4_p2, s4_p3, s5_p1, s5_p2, s5_p3, s5_p4
+    global pre_s1_p1, pre_s1_p2, pre_s1_p3, pre_s1_p4, pre_s1_p5, pre_s2_p1, pre_s2_p2, pre_s2_p3, pre_s3_p1, pre_s3_p2, pre_s3_p3, pre_s4_p1, pre_s4_p2, pre_s4_p3, pre_s5_p1, pre_s5_p2, pre_s5_p3, pre_s5_p4
+
+    #S1, 5 portas, 1 H-S (rx); 4 S-S (tx)
+    if event.connection.dpid == s1_dpid:
+        for f in event.stats:
+            if int(f.port_no) < 65534:
+                if f.port_no == 1:
+                    pre_s1_p1 = s1_p1
+                    s1_p1 = f.tx_packets
+                if f.port_no == 2:
+                    pre_s1_p2 = s1_p2
+                    s1_p2 = f.tx_packets
+                if f.port_no == 3:
+                    pre_s1_p3 = s1_p3
+                    s1_p3 = f.tx_packets
+                if f.port_no == 4:
+                    pre_s1_p4 = s1_p4
+                    s1_p4 = f.tx_packets
+                if f.port_no == 5:
+                    pre_s1_p5 = s1_p5
+                    s1_p5 = f.rx_packets
+
+    #S2, 3 portas, 2 H-S (rx); 1 S-S (tx)
+    if event.connection.dpid == s2_dpid:
+        for f in event.stats:
+            if int(f.port_no) < 65534:
+                if f.port_no == 1:
+                    pre_s2_p1 = s2_p1
+                    s2_p1 = f.tx_packets
+                if f.port_no == 2:
+                    pre_s2_p2 = s2_p2
+                    s2_p2 = f.rx_packets
+                if f.port_no == 3:
+                    pre_s2_p3 = s2_p3
+                    s2_p3 = f.rx_packets
+
+    #S3, 3 portas, 2 H-S (rx); 1 S-S (tx)
+    if event.connection.dpid == s3_dpid:
+        for f in event.stats:
+            if int(f.port_no) < 65534:
+                if f.port_no == 1:
+                    pre_s3_p1 = s3_p1
+                    s3_p1 = f.tx_packets
+                if f.port_no == 2:
+                    pre_s3_p2 = s3_p2
+                    s3_p2 = f.rx_packets
+                if f.port_no == 3:
+                    pre_s3_p3 = s3_p3
+                    s3_p3 = f.rx_packets
+
+    #S4, 3 portas, 2 H-S (rx); 1 S-S (tx)
+    if event.connection.dpid == s4_dpid:
+        for f in event.stats:
+            if int(f.port_no) < 65534:
+                if f.port_no == 1:
+                    pre_s4_p1 = s4_p1
+                    s4_p1 = f.tx_packets
+                if f.port_no == 2:
+                    pre_s4_p2 = s4_p2
+                    s4_p2 = f.rx_packets
+                if f.port_no == 3:
+                    pre_s4_p3 = s4_p3
+                    s4_p3 = f.rx_packets
+                    
+    #S5, 4 portas, 3 H-S (rx); 1 S-S (tx)
+    if event.connection.dpid == s5_dpid:
+        for f in event.stats:
+            if int(f.port_no) < 65534:
+                if f.port_no == 1:
+                    pre_s5_p1 = s5_p1
+                    s5_p1 = f.tx_packets
+                if f.port_no == 2:
+                    pre_s5_p2 = s5_p2
+                    s5_p2 = f.rx_packets
+                if f.port_no == 3:
+                    pre_s5_p3 = s5_p3
+                    s5_p3 = f.rx_packets
+                if f.port_no == 4:
+                    pre_s5_p4 = s5_p4
+                    s5_p4 = f.rx_packets
+
+##############################################
+
+def _handle_ConnectionUp(event):
+    global s1_dpid, s2_dpid, s3_dpid, s4_dpid, s5_dpid
+    print ("ConnectionUp: ", dpidToStr(event.connection.dpid))
+
+    for m in event.connection.features.ports:
+        if m.name == "s1-eth1":
+            s1_dpid = event.connection.dpid
+            print ("s1_dpid=", s1_dpid)
+        elif m.name == "s2-eth1":
+            s2_dpid = event.connection.dpid
+            print ("s2_dpid=", s2_dpid)
+        elif m.name == "s3-eth1":
+            s3_dpid = event.connection.dpid
+            print ("s3_dpid=", s3_dpid)
+        elif m.name == "s4-eth1":
+            s4_dpid = event.connection.dpid
+            print ("s4_dpid=", s4_dpid)
+        elif m.name == "s5-eth1":
+            s5_dpid = event.connection.dpid
+            print ("s5_dpid=", s5_dpid)
+
+def _handle_PacketIn(event):
+    global s1_dpid, s2_dpid, s3_dpid, s4_dpid, s5_dpid
+    packet = event.parsed
+    print ("_handle_PacketIn is called, packet.type:", packet.type, " event.connection.dpid:", event.connection.dpid)
+
+
+#############################################################
+#TODO: Add Connections and Flows for each switch.
