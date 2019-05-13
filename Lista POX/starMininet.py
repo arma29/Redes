@@ -1,4 +1,8 @@
 #!/usr/bin/python
+# sudo -E python <nameofthefile> - run
+# sudo mn -c - kill 
+# hx ping hy - test
+# pingall - test 2
 
 from mininet.topo import Topo
 from mininet.net import Mininet
@@ -12,7 +16,7 @@ from functools import partial
 from mininet.node import RemoteController
 import os
 from time import sleep
-from iperf import IPerfAllTest
+#from iperf3 import IPerfAllTest
 
 
 class MyTopo(Topo):
@@ -88,7 +92,7 @@ def configureNetwork():
     h9.setMAC("0:0:0:0:0:9")
     h10.setMAC("0:0:0:0:0:10")
 
-    info('\n')
+    '''info('\n')
     info("*** Starting iperf Measurement ***\n")
     info('\n')
     info("*** Stop old iperf server ***")
@@ -98,7 +102,7 @@ def configureNetwork():
     info("*** Running test with iperf ***\n")
 
     it = IPerfAllTest(net.hosts)
-    it.start()
+    it.start()'''
 
    # it = IPerfOneToAllPairTest(net.hosts)
    # it.start()
