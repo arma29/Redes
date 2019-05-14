@@ -1,13 +1,14 @@
 '''
 EXEC 2
 sudo mn --topo single,4 --mac --arp --controller remote
+python pox.py --verbose aula2ex1 py \log --no-default --file=/tmp/mylog.log
 '''
 
 # ext/aula2ex1.py
 
 #import
 from pox.core import core
-import pox.openflow.libopoenflow_01 as of 
+import pox.openflow.libopenflow_01 as of 
 from pox.lib.revent import *
 from pox.lib.addresses import EthAddr, IPAddr
 from pox.lib.util import dpidToStr

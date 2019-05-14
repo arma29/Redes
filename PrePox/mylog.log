@@ -1,0 +1,19 @@
+DEBUG:core:POX 0.5.0 (eel) going up...
+DEBUG:core:Running on CPython (2.7.6/Nov 13 2018 12:45:42)
+DEBUG:core:Platform is Linux-3.13.0-24-generic-x86_64-with-Ubuntu-14.04-trusty
+INFO:core:POX 0.5.0 (eel) is up.
+DEBUG:openflow.of_01:Listening on 0.0.0.0:6633
+INFO:openflow.of_01:[00-00-00-00-00-01 1] connected
+DEBUG:aula2ex1:Connectin UP from 1
+DEBUG:aula2ex1:Drop packet sw=1 in_port1 src=00:00:00:00:00:01 dst=00:00:00:00:00:03
+DEBUG:aula2ex1:Drop packet sw=1 in_port1 src=00:00:00:00:00:01 dst=00:00:00:00:00:02
+DEBUG:aula2ex1:Drop packet sw=1 in_port1 src=00:00:00:00:00:01 dst=00:00:00:00:00:04
+DEBUG:aula2ex1:Drop packet sw=1 in_port2 src=00:00:00:00:00:02 dst=00:00:00:00:00:01
+DEBUG:aula2ex1:Drop packet sw=1 in_port2 src=00:00:00:00:00:02 dst=00:00:00:00:00:03
+DEBUG:aula2ex1:Drop packet sw=1 in_port2 src=00:00:00:00:00:02 dst=00:00:00:00:00:04
+DEBUG:aula2ex1:Drop packet sw=1 in_port3 src=00:00:00:00:00:03 dst=00:00:00:00:00:01
+DEBUG:aula2ex1:Drop packet sw=1 in_port3 src=00:00:00:00:00:03 dst=00:00:00:00:00:02
+DEBUG:aula2ex1:Drop packet sw=1 in_port3 src=00:00:00:00:00:03 dst=00:00:00:00:00:04
+DEBUG:aula2ex1:Drop packet sw=1 in_port4 src=00:00:00:00:00:04 dst=00:00:00:00:00:01
+DEBUG:aula2ex1:Drop packet sw=1 in_port4 src=00:00:00:00:00:04 dst=00:00:00:00:00:02
+DEBUG:aula2ex1:Drop packet sw=1 in_port4 src=00:00:00:00:00:04 dst=00:00:00:00:00:03

@@ -2,7 +2,7 @@
 
 # Exec
 # cd pox/
-# python pox.py --verbose myfirstapp py\log --no-default --file=/tmp/mylog.log
+# python pox.py --verbose myfirstapp py \log --no-default --file=/tmp/mylog.log
 
 '''
 EXEC 1
@@ -26,7 +26,7 @@ pox>
 
 #import
 from pox.core import core
-import pox.openflow.libopoenflow_01 as of 
+import pox.openflow.libopenflow_01 as of 
 from pox.lib.revent import *
 
 log = core.getLogger()
