@@ -2634,4 +2634,13 @@ def _handle_PacketIn(event):
         msg.match.nw_src = "10.0.0.10"
         msg.match.nw_dst = "10.0.0.9"
         msg.actions.append(of.ofp_action_output(port=4))
+
+###############################################################################
+
+
+def launch():
+    core.openflow.addListenerByName("PortStatsReceived", _handle_portstats_received)
+    core.openflow.addListenerByName("ConnectionUp", _handle_ConnectionUp)
+    core.openflow.addListenerByName("PacketIn", _handle_PacketIn)
+
         
