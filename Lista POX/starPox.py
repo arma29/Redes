@@ -1673,6 +1673,7 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=1))
         event.connection.send(msg)
 
+        ################## S3-to-Host3 ###################################
         msg = of.ofp_flow_mod()
         msg.priority = 100
         msg.idle_timeout = 0
