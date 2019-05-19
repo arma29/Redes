@@ -217,7 +217,6 @@ def _handle_PacketIn(event):
     packet = event.parsed
     print ("_handle_PacketIn is called, packet.type:", packet.type, " event.connection.dpid:", event.connection.dpid)
 
-
 #############################################################
 #TODO: Add Flows for each switch.
 # Connection S1
