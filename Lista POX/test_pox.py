@@ -1057,7 +1057,7 @@ def _handle_PacketIn(event):
         event.connection.send(msg)
     
 # Connection S2
-    if event.connection.dpid == s1_dpid:
+    if event.connection.dpid == s2_dpid:
         a = packet.find('arp')
         if a and a.protodst == "10.0.0.1":
             msg = of.ofp_packet_out(data=event.ofp)
