@@ -1057,7 +1057,7 @@ def _handle_PacketIn(event):
         event.connection.send(msg)
 
 # Connection S2
-    if event.connection.dpid == s1_dpid:
+    if event.connection.dpid == s2_dpid:
         a = packet.find('arp')
         if a and a.protodst == "10.0.0.1":
             msg = of.ofp_packet_out(data=event.ofp)
@@ -1444,7 +1444,7 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=3))         
 
 # Connection S3
-    if event.connection.dpid == s1_dpid:
+    if event.connection.dpid == s3_dpid:
         a = packet.find('arp')
         if a and a.protodst == "10.0.0.1":
             msg = of.ofp_packet_out(data=event.ofp)
@@ -1797,7 +1797,7 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=3))
 
 # Connection S4
-    if event.connection.dpid == s1_dpid:
+    if event.connection.dpid == s4_dpid:
         a = packet.find('arp')
         if a and a.protodst == "10.0.0.1":
             msg = of.ofp_packet_out(data=event.ofp)
@@ -2151,7 +2151,7 @@ def _handle_PacketIn(event):
         msg.actions.append(of.ofp_action_output(port=3))
 
 # Connection S5
-    if event.connection.dpid == s1_dpid:
+    if event.connection.dpid == s5_dpid:
         a = packet.find('arp')
         if a and a.protodst == "10.0.0.1":
             msg = of.ofp_packet_out(data=event.ofp)
