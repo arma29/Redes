@@ -30,14 +30,14 @@ class MyTopo(Topo):
         s3 = self.addSwitch('s3', cls=OVSKernelSwitch)
 
         #Client-Host
-        client1 = self.addHost('client1')
-        client2 = self.addHost('client2')
-        client3 = self.addHost('client3')
+        client1 = self.addHost('client1', ip='10.0.0.1')
+        client2 = self.addHost('client2', ip='10.0.0.3')
+        client3 = self.addHost('client3', ip='10.0.0.5')
 
         #Server-Host
-        server1 = self.addHost('server1')
-        server2 = self.addHost('server2')
-        server3 = self.addHost('server3')
+        server1 = self.addHost('server1',ip='10.0.0.2')
+        server2 = self.addHost('server2',ip='10.0.0.4')
+        server3 = self.addHost('server3',ip='10.0.0.6')
 
         #Links between switches
         self.addLink(s1, s2, bw=0.24, delay='0ms', loss=0, max_queue_size=1000)
@@ -65,7 +65,14 @@ def configureNetwork():
     "Create network and run simple performance test"
     topo = MyTopo()
     #Tenho que apontar o IP para a instancia do ONOS.
-    net = Mininet(topo=topo, host=CPULimitedHost, link=TCLink, controller=OVSController, ip='127.0.0.1', port=6633)
+
+    net = Mininet(topo=topo, build=False, link=TCLink)
+    controlador = net.addController(name='controlador',
+    controller=RemoteController,
+    ip='127.0.0.1',
+    protocol='tcp',
+    port=6633)
+    
     net.start()
     print ("Dumping host connections")
     dumpNodeConnections(net.hosts)
