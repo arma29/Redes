@@ -40,24 +40,24 @@ class MyTopo(Topo):
         server3 = self.addHost('server3', cls=Host, defaultRoute=None, ip='10.0.0.6/24')
 
         #Links between switches
-        self.addLink(s1, s2, bw=0.24, delay='0ms', loss=0, max_queue_size=1000)
-        self.addLink(s1, s3, bw=0.24, delay='0ms', loss=0, max_queue_size=1000)
-        self.addLink(s2, s3, bw=0.24, delay='0ms', loss=0, max_queue_size=1000)
+        self.addLink(s1, s2, bw=0.03, delay='0ms', loss=0, max_queue_size=1000)
+        self.addLink(s1, s3, bw=0.03, delay='0ms', loss=0, max_queue_size=1000)
+        self.addLink(s2, s3, bw=0.03, delay='0ms', loss=0, max_queue_size=1000)
 
         #Links between switches and clients
-        self.addLink(client1, s1,  bw=0.24, delay='0ms',
+        self.addLink(client1, s1,  bw=0.03, delay='0ms',
                      loss=0, max_queue_size=1000)
-        self.addLink(client2, s2,  bw=0.24, delay='0ms',
+        self.addLink(client2, s2,  bw=0.03, delay='0ms',
                      loss=0, max_queue_size=1000)
-        self.addLink(client3, s3,  bw=0.24, delay='0ms',
+        self.addLink(client3, s3,  bw=0.03, delay='0ms',
                      loss=0, max_queue_size=1000)
 
         #Links between switches and servers
-        self.addLink(server1, s1,  bw=0.24, delay='0ms',
+        self.addLink(server1, s1,  bw=0.03, delay='0ms',
                      loss=0, max_queue_size=1000)
-        self.addLink(server2, s2,  bw=0.24, delay='0ms',
+        self.addLink(server2, s2,  bw=0.03, delay='0ms',
                      loss=0, max_queue_size=1000)
-        self.addLink(server3, s3,  bw=0.24, delay='0ms',
+        self.addLink(server3, s3,  bw=0.03, delay='0ms',
                      loss=0, max_queue_size=1000)
 
 
