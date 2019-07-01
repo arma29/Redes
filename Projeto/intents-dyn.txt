@@ -1,0 +1,92 @@
+add-point-intent -t IPV4 -p 200 SwitchId/InPort SwitchId/OutPort
+
+# Clients
+## First access, always to right
+
+add-point-intent -p 500 -s 00:00:00:00:00:01 --tcpSrc 1234 --tcpDst 1234 of:0000000000000001/3 of:0000000000000001/1
+
+add-point-intent -p 500 -s 00:00:00:00:00:02 --tcpSrc 1234 --tcpDst 1234 of:0000000000000002/3 of:0000000000000002/2
+
+add-point-intent -p 500 -s 00:00:00:00:00:03 --tcpSrc 1234 --tcpDst 1234 of:0000000000000003/3 of:0000000000000003/1
+
+## Dest Final
+
+add-point-intent -p 400 -d 00:00:00:00:00:01 --tcpSrc 1234 --tcpDst 1234 of:0000000000000001/2 of:0000000000000001/3
+
+add-point-intent -p 400 -d 00:00:00:00:00:02 --tcpSrc 1234 --tcpDst 1234 of:0000000000000002/1 of:0000000000000002/3
+
+add-point-intent -p 400 -d 00:00:00:00:00:03 --tcpSrc 1234 --tcpDst 1234 of:0000000000000003/2 of:0000000000000003/3
+
+
+## Repass 
+
+add-point-intent -p 300 -d 00:00:00:00:00:02 --tcpSrc 1234 --tcpDst 1234 of:0000000000000001/2 of:0000000000000001/1
+
+add-point-intent -p 300 -d 00:00:00:00:00:03 --tcpSrc 1234 --tcpDst 1234 of:0000000000000002/1 of:0000000000000002/2
+
+add-point-intent -p 300 -d 00:00:00:00:00:01 --tcpSrc 1234 --tcpDst 1234 of:0000000000000003/2 of:0000000000000003/1
+
+
+# Servers
+## First access, always to right
+
+add-point-intent -p 200 of:0000000000000001/4 --tcpSrc 1234 --tcpDst 1234 of:0000000000000001/1
+
+add-point-intent -p 200 of:0000000000000002/4 --tcpSrc 1234 --tcpDst 1234 of:0000000000000002/2
+
+add-point-intent -p 200 of:0000000000000003/4 --tcpSrc 1234 --tcpDst 1234 of:0000000000000003/1
+
+## Dest Final
+
+add-point-intent -p 100 -s 00:00:00:00:00:06 --tcpSrc 1234 --tcpDst 1234 of:0000000000000001/2 of:0000000000000001/4
+
+add-point-intent -p 100 -s 00:00:00:00:00:04 --tcpSrc 1234 --tcpDst 1234 of:0000000000000002/1 of:0000000000000002/4
+
+add-point-intent -p 100 -s 00:00:00:00:00:05 --tcpSrc 1234 --tcpDst 1234 of:0000000000000003/2 of:0000000000000003/4
+
+
+#####################################################################################################
+## Se no horario
+# Clients
+## First access, always to right
+
+add-point-intent -p 500 -s 00:00:00:00:00:01 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000001/3 of:0000000000000001/1
+
+add-point-intent -p 500 -s 00:00:00:00:00:02 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000002/3 of:0000000000000002/2
+
+add-point-intent -p 500 -s 00:00:00:00:00:03 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000003/3 of:0000000000000003/1
+
+## Dest Final
+
+add-point-intent -p 400 -d 00:00:00:00:00:01 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000001/2 of:0000000000000001/3
+
+add-point-intent -p 400 -d 00:00:00:00:00:02 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000002/1 of:0000000000000002/3
+
+add-point-intent -p 400 -d 00:00:00:00:00:03 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000003/2 of:0000000000000003/3
+
+
+## Repass 
+
+add-point-intent -p 300 -d 00:00:00:00:00:02 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000001/2 of:0000000000000001/1
+
+add-point-intent -p 300 -d 00:00:00:00:00:03 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000002/1 of:0000000000000002/2
+
+add-point-intent -p 300 -d 00:00:00:00:00:01 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000003/2 of:0000000000000003/1
+
+
+# Servers
+## First access, always to right
+
+add-point-intent -p 200 of:0000000000000001/4 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000001/1
+
+add-point-intent -p 200 of:0000000000000002/4 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000002/2
+
+add-point-intent -p 200 of:0000000000000003/4 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000003/1
+
+## Dest Final
+
+add-point-intent -p 100 -s 00:00:00:00:00:06 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000001/2 of:0000000000000001/4
+
+add-point-intent -p 100 -s 00:00:00:00:00:04 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000002/1 of:0000000000000002/4
+
+add-point-intent -p 100 -s 00:00:00:00:00:05 --tcpSrc 1234 --tcpDst 1234 -b 0.02 of:0000000000000003/2 of:0000000000000003/4
