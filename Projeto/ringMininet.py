@@ -25,14 +25,14 @@ class MyTopo(Topo):
     def __init__(self):
         Topo.__init__(self)
         #Switches
-        s1 = self.addSwitch('s1', cls=OVSKernelSwitch)
-        s2 = self.addSwitch('s2', cls=OVSKernelSwitch)
-        s3 = self.addSwitch('s3', cls=OVSKernelSwitch)
+        s1 = self.addSwitch('s1')
+        s2 = self.addSwitch('s2')
+        s3 = self.addSwitch('s3')
 
         #Client-Host
-        client1 = self.addHost('client1', cls=Host, defaultRoute=None, ip='10.0.0.1/24')
-        client2 = self.addHost('client2', cls=Host, defaultRoute=None, ip='10.0.0.3/24')
-        client3 = self.addHost('client3', cls=Host, defaultRoute=None, ip='10.0.0.5/24')
+        client1 = self.addHost('client1', ip='10.0.0.1/24')
+        client2 = self.addHost('client2', ip='10.0.0.3/24')
+        client3 = self.addHost('client3', ip='10.0.0.5/24')
 
         #Server-Host
         server1 = self.addHost('server1', cls=Host, defaultRoute=None, ip='10.0.0.2/24')
@@ -66,13 +66,12 @@ def configureNetwork():
     topo = MyTopo()
     #Tenho que apontar o IP para a instancia do ONOS.
 
-    net = Mininet(topo=topo, build=False, link=TCLink)
+    net = Mininet(topo=topo,link=TCLink)
 
     controlador = net.addController(name='controlador',
     controller=RemoteController,
-    ip='127.17.0.1',
-    protocol='tcp',
-    port=6633)
+    ip='127.17.0.5',
+    port=8181)
     
     net.start()
     # net.build()

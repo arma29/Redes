@@ -1,0 +1,17 @@
+{
+  "devices": {
+    "of:0000000000000001": { "basic": { "name": "Switch #1" }},
+    "of:0000000000000002": { "basic": { "name": "Switch #2" }},
+    "of:0000000000000003": { "basic": { "name": "Switch #3" }}
+  },
+
+  "hosts": {
+    "00:00:00:00:00:01/None": { "basic": { "name": "Client #1" }},
+    "00:00:00:00:00:02/None": { "basic": { "name": "Client #2" }},
+    "00:00:00:00:00:03/None": { "basic": { "name": "Client #3" }},
+    "00:00:00:00:00:04/None": { "basic": { "name": "Server #1" }},
+    "00:00:00:00:00:05/None": { "basic": { "name": "Server #2" }},
+    "00:00:00:00:00:06/None": { "basic": { "name": "Server #3" }}
+
+  }
+}
